@@ -25,7 +25,8 @@ __pythonbrew_set_path()
 {
     PATH_WITHOUT_PYTHONBREW=$(printf "$PATH" | awk -v RS=: -v ORS=: "/${PATH_ROOT//\//\/}/ {next} {print}" | sed -e 's#:$##')
     export PATH=$PATH_PYTHONBREW:$PATH_WITHOUT_PYTHONBREW
-    export PYTHONPATH=$PATH_PYTHONBREW_LIB
+    PYTHONPATH=$(echo "${PYTHONPATH:+$PYTHONPATH:}$PATH_PYTHONBREW_LIB" | tr ':' '\n' | uniq | paste -d: -s -)
+    export PYTHONPATH
 }
 
 __pythonbrew_set_temp_path()
