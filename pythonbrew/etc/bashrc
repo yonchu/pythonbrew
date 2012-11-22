@@ -45,7 +45,11 @@ __pythonbrew_set_current_path()
 {
     if [[ -s "$PATH_HOME_ETC/current" ]] ; then
         source "$PATH_HOME_ETC/current"
-        PATH_PYTHONBREW="$PATH_ROOT/bin:$PATH_PYTHONBREW_CURRENT"
+        if [[ -n $PATH_PYTHONBREW_CURRENT && "$PATH_ROOT/bin" != "$PATH_PYTHONBREW_CURRENT" ]]; then
+            PATH_PYTHONBREW="$PATH_ROOT/bin:$PATH_PYTHONBREW_CURRENT"
+        else
+            PATH_PYTHONBREW="$PATH_ROOT/bin"
+        fi
         PATH_PYTHONBREW_LIB="$PATH_PYTHONBREW_CURRENT_LIB"
     else
         __pythonbrew_set_default
