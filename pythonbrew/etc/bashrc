@@ -23,14 +23,24 @@ __pythonbrew_set_default()
 
 __pythonbrew_set_path()
 {
+    # Set PATH
     local new_path
     new_path=$(__pythonbrew__uniq_path "$PATH")
     [[ $? -eq 0 && -n "$new_path" ]] && PATH=$new_path
 
     PATH_WITHOUT_PYTHONBREW=$(printf "$PATH" | awk -v RS=: -v ORS=: "/${PATH_ROOT//\//\/}/ {next} {print}" | sed -e 's#:$##')
     export PATH=$PATH_PYTHONBREW:$PATH_WITHOUT_PYTHONBREW
-    PYTHONPATH=$(echo "${PYTHONPATH:+$PYTHONPATH:}$PATH_PYTHONBREW_LIB" | tr ':' '\n' | uniq | paste -d: -s -)
-    export PYTHONPATH
+
+    # Set PYTHONPATH
+    local new_pythopath
+    new_pythopath=$(printf "$PYTHONPATH" | awk -v RS=: -v ORS=: "/${PATH_ROOT//\//\/}/ {next} {print}" | sed -e 's#:$##')
+
+    if [[ -n "$new_pythopath" && -n "$PATH_PYTHONBREW_LIB" ]]; then
+        new_pythopath=$new_pythopath:$PATH_PYTHONBREW_LIB
+    elif [[ -n "$PATH_PYTHONBREW_LIB" ]]; then
+        new_pythopath=$PATH_PYTHONBREW_LIB
+    fi
+    export PYTHONPATH=$new_pythopath
 }
 
 __pythonbrew__uniq_path() {
