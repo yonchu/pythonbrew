@@ -153,6 +153,11 @@ class VenvCommand(Command):
             logger.error('`%s` environment does not exist. Try `pythonbrew venv create %s`.' % (args[1], args[1]))
             sys.exit(1)
         
+        path = os.path.abspath(os.path.join(PATH_PYTHONS, '..', 'current'))
+        if os.path.isdir(path):
+            os.unlink(path)
+        os.symlink(os.path.abspath(os.path.join(self._workon_home, args[1])), path)
+
         self._write("""\
 echo '# Using `%(arg)s` environment (found in %(workon_home)s)'
 echo '# To leave an environment, simply run `deactivate`'

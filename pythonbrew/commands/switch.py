@@ -25,6 +25,11 @@ class SwitchCommand(Command):
 
         set_current_path(pkgbin, pkglib)
 
+        path = os.path.abspath(os.path.join(PATH_PYTHONS, '..', 'current'))
+        if os.path.isdir(path):
+            os.unlink(path)
+        os.symlink(os.path.abspath(os.path.join(PATH_PYTHONS, pkgname)), path)
+
         logger.info("Switched to %s" % pkgname)
 
 SwitchCommand()

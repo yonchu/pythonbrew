@@ -26,6 +26,11 @@ class UseCommand(Command):
 
         self._set_temp(pkgbin, pkglib)
 
+        path = os.path.abspath(os.path.join(PATH_PYTHONS, '..', 'current'))
+        if os.path.isdir(path):
+            os.unlink(path)
+        os.symlink(os.path.abspath(os.path.join(PATH_PYTHONS, pkgname)), path)
+
         logger.info("Using `%s`" % pkgname)
 
     def _set_temp(self, bin_path, lib_path):
